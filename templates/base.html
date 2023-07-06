@@ -1,0 +1,56 @@
+{% load static tailwind_tags %}
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>
+        {% block title %}
+        {% endblock %}
+    </title>
+    {% block extra_head %}
+    {% endblock %}
+    <style>
+        @media (min-width: 640px) {
+            #logo-sidebar {
+                position: sticky !important;
+            }
+        }
+    </style>
+    <!-- Tailwind CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.css"  rel="stylesheet" />
+    <script src="{% static 'Home/js/components/darkMode.js' %}"></script>
+    {% tailwind_css %}
+</head>
+<body>
+    {% block navbar %}
+    {% endblock %}
+
+    <div class="min-h-screen bg-gray-200 dark:bg-gray-900">
+        <div class="sm:flex gap-2 mb-2">
+            {% block sidebar %}
+            {% endblock %}
+
+            {% block content %}
+            {% endblock %}
+        </div>
+
+        {% block footer %}
+        {% endblock %}
+
+    </div>
+
+    <!-- Tailwind JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/flowbite.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- Sweet Alert -->
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Custom JS -->
+    {% block js %}
+    {% endblock %}
+    <script src="{% static 'Home/js/components/switchDarkMode.js' %}"></script>
+</body>
+</html>
