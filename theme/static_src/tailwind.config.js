@@ -44,8 +44,28 @@ module.exports = {
          */
         // '../../**/*.py'
     ],
+    safelist: [
+        'w-64',
+        'w-1/2',
+        'rounded-l-lg',
+        'rounded-r-lg',
+        'bg-gray-200',
+        'grid-cols-4',
+        'grid-cols-7',
+        'h-6',
+        'leading-6',
+        'h-9',
+        'leading-9',
+        'shadow-lg'
+    ],
     theme: {
         extend: {},
+        colors: {
+          gray: colors.coolGray,
+          blue: colors.lightBlue,
+          red: colors.rose,
+          pink: colors.fuchsia,
+        },
     },
     plugins: [
         /**
@@ -53,6 +73,7 @@ module.exports = {
          * for forms. If you don't like it or have own styling for forms,
          * comment the line below to disable '@tailwindcss/forms'.
          */
+        require('@flowbite/plugin'),
         require('@tailwindcss/forms'),
         require('@tailwindcss/typography'),
         require('@tailwindcss/line-clamp'),

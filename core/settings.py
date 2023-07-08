@@ -20,7 +20,7 @@ environ.Env.read_env()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = env('SECRET_KEY')
-DEBUG = env('DEBUG')
+DEBUG = env('DEBUG') == 'True'
 
 ALLOWED_HOSTS = []
 
@@ -68,6 +68,8 @@ INSTALLED_APPS = [
     'tailwind',
     'theme',
     "django_browser_reload",
+    'widget_tweaks',
+    'naomi',
 
     'allauth',
     'allauth.account',
