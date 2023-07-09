@@ -41,12 +41,12 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_UNIQUE = True
 ACCOUNT_LOGOUT_ON_GET = True
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
-# AUTH_USER_MODEL = "Users.User"
+AUTH_USER_MODEL = "Users.CustomUser"
 ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 3
 ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 300
-ACCOUNT_FORMS = {
-    'signup': 'Apps.Users.forms.CreateUserForm'
-}
+# ACCOUNT_FORMS = {
+#     'signup': 'Apps.Users.forms.CreateUserForm'
+# }
 LOGIN_REDIRECT_URL = "/"
 LOGIN_URL = "account_login"
 LOGOUT_REDIRECT_URL = '/'
@@ -64,6 +64,8 @@ INSTALLED_APPS = [
 
     'core',
     'Apps.Home.apps.HomeConfig',
+    'Apps.Users.apps.UsersConfig',
+    'Apps.Gyms.apps.GymsConfig',
 
     'tailwind',
     'theme',

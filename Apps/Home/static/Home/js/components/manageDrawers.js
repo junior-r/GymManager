@@ -35,7 +35,7 @@ function closeDrawer(modalId) {
     $(`#${modalId}`).empty();
 }
 
-function closOpenDrawer(url, closeModalId, openModalId) {
+function closeOpenDrawer(url, closeModalId, openModalId) {
     closeDrawer(closeModalId);
     setTimeout(function() {
         openDrawer(url, openModalId);
