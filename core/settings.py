@@ -44,9 +44,9 @@ ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 AUTH_USER_MODEL = "Users.CustomUser"
 ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 3
 ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 300
-# ACCOUNT_FORMS = {
-#     'signup': 'Apps.Users.forms.CreateUserForm'
-# }
+ACCOUNT_FORMS = {
+    'signup': 'Apps.Users.forms.CustomUserCreationForm'
+}
 LOGIN_REDIRECT_URL = "/"
 LOGIN_URL = "account_login"
 LOGOUT_REDIRECT_URL = '/'
