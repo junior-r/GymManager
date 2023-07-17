@@ -8,6 +8,7 @@ urlpatterns = [
     path("__reload__/", include("django_browser_reload.urls")),
     path('accounts/', include('allauth.urls')),
     path('', include('Apps.Home.urls', namespace='Home')),
+    path('Users/', include('Apps.Users.urls', namespace='Users')),
 ]
 
 if settings.DEBUG:

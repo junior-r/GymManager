@@ -1,4 +1,5 @@
 {% extends "account/base.html" %}
+{% load countries %}
 
 {% load i18n static widget_tweaks %}
 
@@ -14,65 +15,20 @@
 
 {% block content %}
     <div class="main-container w-full bg-gray-100 dark:bg-gray-800">
-        <div class="content relative grid grid-cols-2 h-full" style="min-height: 100vh">
+        <div class="content relative grid grid-cols-1 lg:grid-cols-2 h-full" style="min-height: 100vh">
             <h1 class="text-5xl absolute z-10 top-0 left-1/2 pt-2 -translate-x-1/2 font-extrabold dark:text-white text-center">{% trans "Sign Up" %}</h1>
-            <div class="form h-full pt-16">
-
-                {% if form.errors %}
-                    <div id="toast-danger"
-                         class="absolute flex items-center w-full max-w-xl top-4 left-8 p-4 mb-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800"
-                         role="alert">
-                        <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-red-500 bg-red-100 rounded-lg dark:bg-red-800 dark:text-red-200">
-                            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
-                                 xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd"
-                                      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                      clip-rule="evenodd"></path>
-                            </svg>
-                            <span class="sr-only">Error icon</span>
-                        </div>
-                        <div class="ml-3 text-sm font-normal">
-                            <ul>
-                                {% for key, value in form.errors.items %}
-                                    <li class="flex gap-2">
-                                        {{ key }}
-                                        <svg fill="none" class="w-5 h-5 text-gray-500 dark:text-gray-400"
-                                             stroke="currentColor"
-                                             stroke-width="1.5" viewBox="0 0 24 24"
-                                             xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                  d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"></path>
-                                        </svg>
-                                        {{ value }}
-                                    </li>
-                                {% endfor %}
-                            </ul>
-
-                        </div>
-                        <button type="button"
-                                class="ml-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700"
-                                data-dismiss-target="#toast-danger" aria-label="Close">
-                            <span class="sr-only">Close</span>
-                            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
-                                 xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd"
-                                      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                      clip-rule="evenodd"></path>
-                            </svg>
-                        </button>
-                    </div>
-                {% endif %}
-
+            <div class="form h-full pt-16 relative">
                 <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
                     <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
                         <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                             Ingresa tus datos
                         </h1>
-                        <form action="">
+                        <form action="{% url 'account_signup' %}" id="signupForm" method="post"
+                              enctype="multipart/form-data">
                             {% csrf_token %}
 
                             <div class="content-prev-logo relative">
-                                <img class="h-96 mx-auto object-cover rounded mb-6" loading="lazy" id="prevImageUser"
+                                <img class="h-56 mx-auto object-cover rounded mb-6" loading="lazy" id="prevImageUser"
                                      src="{% static 'Home/img/components/user_profile_placeholder.jpg' %}"
                                      alt="Imagen de perfil del usuario">
                                 <button type="button" id="delete-file-btn"
@@ -88,22 +44,220 @@
                                 </button>
                             </div>
 
-                            <div class="relative">
-                                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                            <div class="relative mb-4">
+                                <label class="block text-sm font-medium text-gray-900 dark:text-white"
                                        for="{{ form.image.id_for_label }}">
                                     {{ form.image.label }}
                                 </label>
                                 {% render_field form.image name=form.image.html_name id=form.image.id_for_label class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" %}
-                                <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">SVG, PNG, JPG o WEBP.</p>
+                                <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">SVG, PNG,
+                                    JPG o WEBP.</p>
+                            </div>
+
+                            <div class="grid md:grid-cols-2 md:gap-6 mb-4">
+                                <div class="relative">
+                                    <label class="block text-sm font-medium text-gray-900 dark:text-white"
+                                           for="{{ form.first_name.id_for_label }}">
+                                        {{ form.first_name.label }}
+                                    </label>
+                                    {% render_field form.first_name name=form.first_name.html_name id=form.first_name.id_for_label class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" %}
+                                </div>
+
+                                <div class="relative">
+                                    <label class="block text-sm font-medium text-gray-900 dark:text-white"
+                                           for="{{ form.last_name.id_for_label }}">
+                                        {{ form.last_name.label }}
+                                    </label>
+                                    {% render_field form.last_name name=form.last_name.html_name id=form.last_name.id_for_label class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" %}
+                                </div>
+                            </div>
+
+                            <div class="grid md:grid-cols-2 md:gap-6 mb-4">
+                                <div class="relative">
+                                    <label class="block text-sm font-medium text-gray-900 dark:text-white"
+                                           for="{{ form.username.id_for_label }}">
+                                        {{ form.username.label }}
+                                    </label>
+                                    <input type="text" placeholder="John123"
+                                           onkeyup="checkUsername(this.id, '{% url 'Users:check_available_field' %}', 'username', 'usernameAvailableMessage')"
+                                           name="{{ form.username.html_name }}" id="{{ form.username.id_for_label }}"
+                                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                    <p id="usernameAvailableMessage"></p>
+                                </div>
+
+                                <div class="relative">
+                                    <label class="block text-sm font-medium text-gray-900 dark:text-white"
+                                           for="{{ form.email.id_for_label }}">
+                                        {{ form.email.label }}*
+                                    </label>
+                                    <input type="email" placeholder="example@email.com"
+                                           onkeyup="checkUsername(this.id, '{% url 'Users:check_available_field' %}', 'email', 'emailAvailableMessage')"
+                                           name="{{ form.email.html_name }}" id="{{ form.email.id_for_label }}"
+                                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                    <p id="emailAvailableMessage"></p>
+                                </div>
+                            </div>
+
+                            <div class="grid md:grid-cols-2 md:gap-6 mb-4">
+                                <div class="relative">
+                                    <label class="block text-sm font-medium text-gray-900 dark:text-white"
+                                           for="{{ form.password1.id_for_label }}">
+                                        {{ form.password1.label }}*
+                                    </label>
+                                    {% render_field form.password1 name=form.password1.html_name id=form.password1.id_for_label class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" %}
+                                </div>
+
+                                <div class="relative">
+                                    <label class="block text-sm font-medium text-gray-900 dark:text-white"
+                                           for="{{ form.password2.id_for_label }}">
+                                        {{ form.password2.label }}*
+                                    </label>
+                                    {% render_field form.password2 name=form.password2.html_name id=form.password2.id_for_label class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" %}
+                                </div>
+                            </div>
+                            <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700">
+                            <div class="grid md:grid-cols-2 md:gap-6 mb-4">
+                                <div class="relative">
+                                    <label class="block text-sm font-medium text-gray-900 dark:text-white"
+                                           for="{{ form.phone.id_for_label }}">
+                                        {{ form.phone.label }}
+                                    </label>
+                                    <div class="flex">
+                                        <div class="country w-full">
+                                            {% get_countries as countries %}
+                                            <label class="block text-sm font-medium text-gray-900 dark:text-white"
+                                                   for="{{ form.country.id_for_label }}">
+                                                {{ form.country.label }}
+                                            </label>
+                                            <select name="{{ form.country.html_name }}"
+                                                    style="border-radius: 0.5rem 0 0 0.5rem;"
+                                                    id="{{ form.country.id_for_label }}"
+                                                    class="bg-gray-50 border border-gray-300 text-gray-900 mb-6 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                                {% for country in countries %}
+                                                    <option value="{{ country.code }}">{{ country.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="phone w-full">
+                                            {% render_field form.phone style="border-radius: 0 0.5rem 0.5rem 0;" name=form.phone.html_name id=form.phone.id_for_label class="numeric-input bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="relative">
+                                    <label class="block text-sm font-medium text-gray-900 dark:text-white"
+                                           for="{{ form.identification_type.id_for_label }}">
+                                        {{ form.identification_type.label }}
+                                    </label>
+                                    <div class="flex items-center">
+                                        <div class="identification_type w-full">
+                                            {% render_field form.identification_type style="border-radius: 0.5rem 0 0 0.5rem;" name=form.identification_type.html_name id=form.identification_type.id_for_label class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" %}
+                                        </div>
+                                        <div class="identification_number w-full">
+                                            <input type="text" placeholder="Número de identificación"
+                                                   onkeyup="checkUsername(this.id, '{% url 'Users:check_available_field' %}', 'identification', 'identificationAvailableMessage')"
+                                                   style="border-radius: 0 0.5rem 0.5rem 0;"
+                                                   name="{{ form.identification_number.html_name }}"
+                                                   id="{{ form.identification_number.id_for_label }}"
+                                                   class="numeric-input bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                        </div>
+                                    </div>
+                                    <p id="identificationAvailableMessage"></p>
+                                </div>
+                            </div>
+
+                            <div class="grid md:grid-cols-2 md:gap-6 mb-4">
+                                <div class="relative">
+                                    <label class="block text-sm font-medium text-gray-900 dark:text-white"
+                                           for="{{ form.gender.id_for_label }}">
+                                        {{ form.gender.label }}
+                                    </label>
+                                    {% render_field form.gender name=form.gender.html_name id=form.gender.id_for_label class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" %}
+                                </div>
+
+                                <div class="relative">
+                                    <label class="block text-sm font-medium text-gray-900 dark:text-white"
+                                           for="{{ form.birth_date.id_for_label }}">
+                                        {{ form.birth_date.label }}
+                                    </label>
+                                    {% render_field form.birth_date datepicker='' datepicker-title="Fecha de Nacimiento" datepicker-format="dd/mm/yyyy" name=form.birth_date.html_name id=form.birth_date.id_for_label class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" %}
+                                </div>
+                            </div>
+
+                            <div class="relative mb-4">
+                                <label for="{{ form.address.html_name }}"
+                                       class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    {{ form.address.label }}
+                                </label>
+                                {% render_field form.address name=form.address.html_name id=form.address.id_for_label class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" %}
+                            </div>
+
+                            <div class="grid md:grid-cols-2 md:gap-6 mb-4">
+                                <button type="button" id="resetBtn"
+                                        class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                                    Limpiar campos
+                                </button>
+                                <button type="submit" id="submitButton"
+                                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                    Registrarme
+                                </button>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
-            <div class="image h-full pt-16 bg-no-repeat bg-cover"
-                 style="background-image: url({% static 'Home/img/components/cover.jpg' %}); filter: brightness(0.3)">
-            </div>
+            <div class="side h-full pt-16 relative">
+                <div class="image bg-no-repeat bg-cover absolute top-0 left-0 right-0 bottom-0"
+                     style="background-image: url({% static 'Home/img/components/cover.jpg' %}); filter: brightness(0.3)">
+                </div>
+                <div class="errors_container relative z-10 flex items-center flex-col justify-center h-full w-full">
+                    <h4 class="text-2xl font-bold dark:text-white mb-4">¡Oops. Tienes algunos errores!</h4>
+                    {% if form.errors %}
+                        {% for key, value in form.errors.items %}
+                            <div id="toast-danger-{{ key }}"
+                                 class="flex items-center w-full max-w-xl top-4 left-8 p-4 mb-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800"
+                                 role="alert">
+                                <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-red-500 bg-red-100 rounded-lg dark:bg-red-800 dark:text-red-200">
+                                    <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                                         xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                              clip-rule="evenodd"></path>
+                                    </svg>
+                                    <span class="sr-only">Error icon</span>
+                                </div>
+                                <div class="ml-3 text-sm font-normal">
+                                    <ul>
+                                        <li class="flex gap-2">
+                                            {{ key }}
+                                            <svg fill="none" class="w-5 h-5 text-gray-500 dark:text-gray-400"
+                                                 stroke="currentColor"
+                                                 stroke-width="1.5" viewBox="0 0 24 24"
+                                                 xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                      d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"></path>
+                                            </svg>
+                                            {{ value }}
+                                        </li>
+                                    </ul>
 
+                                </div>
+                                <button type="button"
+                                        class="ml-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700"
+                                        data-dismiss-target="#toast-danger-{{ key }}" aria-label="Close">
+                                    <span class="sr-only">Close</span>
+                                    <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                                         xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                              clip-rule="evenodd"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}
@@ -114,7 +268,39 @@
 
 {% block extra_body %}
     <script src="{% static 'Users/js/components/previewImage.js' %}"></script>
+    <script src="{% static 'Users/js/components/checkUsernameAvailable.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/datepicker.min.js"></script>
     <script>
         previewImage('create', '{{ form.image.id_for_label }}', 'prevImageUser')
+    </script>
+    <script>
+        function validateOnlyNumbers(event) {
+            const charCode = event.which ? event.which : event.keyCode;
+            if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                event.preventDefault();
+                return false;
+            }
+            return true;
+        }
+
+        $(document).ready(function () {
+            $('.numeric-input').keypress(function (event) {
+                validateOnlyNumbers(event);
+            });
+
+            $('#resetBtn').click(function () {
+                const signupForm = $('#signupForm')[0];
+                const inputImage = $('#id_image')
+                const imagePrev = $('#prevImageUser')
+                const delImgBtn = $('#delete-file-btn')
+                // Resetear el formulario
+                signupForm.reset();
+                inputImage.attr('value', '')
+                imagePrev.attr('src', '{% static 'Home/img/components/user_profile_placeholder.jpg' %}')
+                if (!delImgBtn.hasClass('hidden')) {
+                    delImgBtn.addClass('hidden')
+                }
+            })
+        });
     </script>
 {% endblock %}

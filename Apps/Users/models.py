@@ -39,12 +39,12 @@ class CustomUser(AbstractUser):
     image = models.ImageField(upload_to=user_directory_image_path)
     address = models.CharField(max_length=200)
     country = CountryField(blank=False, null=False)
-    identification = models.CharField(max_length=10, blank=False, null=False)
+    identification_number = models.CharField(max_length=10, blank=False, null=False, unique=True)
     identification_type = models.CharField(choices=identification_type_options, max_length=11)
     phone = models.CharField(max_length=20)
     user_type = models.CharField(max_length=25, choices=USER_TYPE_CHOICES)
     gender = models.CharField(max_length=20, choices=GENDER_OPTIONS, blank=True, null=True)
-    birth_date = models.DateField()
+    birth_date = models.DateField(blank=True, null=True)
 
     def __str__(self):
         return self.get_username()

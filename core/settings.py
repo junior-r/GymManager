@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     "django_browser_reload",
     'widget_tweaks',
     'naomi',
+    'django_countries',
 
     'allauth',
     'allauth.account',
