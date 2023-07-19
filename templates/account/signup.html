@@ -79,7 +79,7 @@
                                         {{ form.username.label }}
                                     </label>
                                     <input type="text" placeholder="John123"
-                                           onkeyup="checkUsername(this.id, '{% url 'Users:check_available_field' %}', 'username', 'usernameAvailableMessage')"
+                                           onkeyup="checkAvailableData(this.id, '{% url 'Users:check_available_field' %}', 'username', 'usernameAvailableMessage')"
                                            name="{{ form.username.html_name }}" id="{{ form.username.id_for_label }}"
                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                     <p id="usernameAvailableMessage"></p>
@@ -91,7 +91,7 @@
                                         {{ form.email.label }}*
                                     </label>
                                     <input type="email" placeholder="example@email.com"
-                                           onkeyup="checkUsername(this.id, '{% url 'Users:check_available_field' %}', 'email', 'emailAvailableMessage')"
+                                           onkeyup="checkAvailableData(this.id, '{% url 'Users:check_available_field' %}', 'email', 'emailAvailableMessage')"
                                            name="{{ form.email.html_name }}" id="{{ form.email.id_for_label }}"
                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                     <p id="emailAvailableMessage"></p>
@@ -115,6 +115,7 @@
                                     {% render_field form.password2 name=form.password2.html_name id=form.password2.id_for_label class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" %}
                                 </div>
                             </div>
+                            <p id="passwordsMatchMessage"></p>
                             <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700">
                             <div class="grid md:grid-cols-2 md:gap-6 mb-4">
                                 <div class="relative">
@@ -155,7 +156,7 @@
                                         </div>
                                         <div class="identification_number w-full">
                                             <input type="text" placeholder="Número de identificación"
-                                                   onkeyup="checkUsername(this.id, '{% url 'Users:check_available_field' %}', 'identification', 'identificationAvailableMessage')"
+                                                   onkeyup="checkAvailableData(this.id, '{% url 'Users:check_available_field' %}', 'identification', 'identificationAvailableMessage')"
                                                    style="border-radius: 0 0.5rem 0.5rem 0;"
                                                    name="{{ form.identification_number.html_name }}"
                                                    id="{{ form.identification_number.id_for_label }}"
@@ -211,8 +212,8 @@
                      style="background-image: url({% static 'Home/img/components/cover.jpg' %}); filter: brightness(0.3)">
                 </div>
                 <div class="errors_container relative z-10 flex items-center flex-col justify-center h-full w-full">
-                    <h4 class="text-2xl font-bold dark:text-white mb-4">¡Oops. Tienes algunos errores!</h4>
                     {% if form.errors %}
+                        <h4 class="text-2xl font-bold dark:text-white mb-4">¡Oops. Tienes algunos errores!</h4>
                         {% for key, value in form.errors.items %}
                             <div id="toast-danger-{{ key }}"
                                  class="flex items-center w-full max-w-xl top-4 left-8 p-4 mb-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800"
@@ -268,22 +269,14 @@
 
 {% block extra_body %}
     <script src="{% static 'Users/js/components/previewImage.js' %}"></script>
-    <script src="{% static 'Users/js/components/checkUsernameAvailable.js' %}"></script>
+    <script src="{% static 'Users/js/components/checkAvailableData.js' %}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.7.0/datepicker.min.js"></script>
+    <script src="{% static 'Users/js/index.js' %}"></script>
+    <script src="{% static 'Users/js/validatePasswords.js' %}"></script>
     <script>
-        previewImage('create', '{{ form.image.id_for_label }}', 'prevImageUser')
-    </script>
-    <script>
-        function validateOnlyNumbers(event) {
-            const charCode = event.which ? event.which : event.keyCode;
-            if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-                event.preventDefault();
-                return false;
-            }
-            return true;
-        }
-
         $(document).ready(function () {
+            previewImage('create', '{{ form.image.id_for_label }}', 'prevImageUser')
+
             $('.numeric-input').keypress(function (event) {
                 validateOnlyNumbers(event);
             });
@@ -300,7 +293,9 @@
                 if (!delImgBtn.hasClass('hidden')) {
                     delImgBtn.addClass('hidden')
                 }
-            })
+            });
+            
+
         });
     </script>
 {% endblock %}

@@ -68,7 +68,7 @@ class CustomUserCreationForm(SignupForm):
     class Meta:
         model = CustomUser
         fields = ['image', 'email', 'username', 'first_name', 'last_name', 'password1', 'password2', 'address',
-                  'country', 'phone', 'identification', 'identification_type', 'gender', 'birth_date']
+                  'country', 'phone', 'identification_number', 'identification_type', 'gender', 'birth_date']
 
 
 class DateInput(forms.DateInput):
